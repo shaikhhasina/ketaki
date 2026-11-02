@@ -98,4 +98,27 @@
       btn.disabled=false;btn.textContent='Submit';
     });
   });
+
+  // amenities slider
+  (function(){
+    const st=document.querySelector('.as-stage'); if(!st) return;
+    const sl=[...st.querySelectorAll('.as-slide')], pn=[...document.querySelectorAll('.as-panel')], dt=[...document.querySelectorAll('.as-dot')];
+    const n=sl.length; let cur=0, x0=null;
+    function go(i){
+      cur=(i+n)%n;
+      sl.forEach((s,k)=>{const d=(k-cur+n)%n;
+        s.classList.toggle('is-active',d===0);
+        s.classList.toggle('is-next',d===1);
+        s.classList.toggle('is-prev',d===n-1&&n>2);});
+      pn.forEach((p,k)=>p.classList.toggle('active',k===cur));
+      dt.forEach((p,k)=>p.classList.toggle('active',k===cur));
+    }
+    document.querySelectorAll('.as-arrow').forEach(b=>b.addEventListener('click',()=>go(cur+ +b.dataset.dir)));
+    dt.forEach((d,k)=>d.addEventListener('click',()=>go(k)));
+    sl.forEach((s,k)=>s.addEventListener('click',()=>{if(k!==cur) go(k)}));
+    st.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(cur+1);if(e.key==='ArrowLeft')go(cur-1)});
+    st.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});
+    st.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)go(cur+(dx<0?1:-1));x0=null});
+    go(0);
+  })();
 })();
