@@ -350,3 +350,18 @@ figcaption{position:absolute;left:0;bottom:0;right:0;background:linear-gradient(
 @keyframes asIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media(max-width:900px){.amen-slider{grid-template-columns:1fr;gap:28px}.as-panels{min-height:0}}
 @media(prefers-reduced-motion:reduce){.as-slide,.as-panel.active{transition:none;animation:none}}
+
+/* ===== Liquid effects (feat/liquid-effects) — remove this block to remove the feature ===== */
+/* Liquid Logo: gold liquid-metal lotus video laid exactly over the lotus in logo-large.png (crop 194,22 214x186 of 610x505) */
+.logo-liquid{position:relative;width:230px;max-width:100%}
+.logo-liquid img{width:100%}
+.logo-liquid-video{position:absolute;left:31.803%;top:4.356%;width:35.082%;height:36.832%;object-fit:fill;opacity:0;transition:opacity .8s ease;pointer-events:none}
+.logo-liquid.is-playing .logo-liquid-video{opacity:1}
+@media (prefers-reduced-motion:reduce){.logo-liquid-video{display:none}}
+@media print{.logo-liquid-video{display:none}}
+/* Liquid Glass: decorative refraction layer behind the "Explore Project" button (desktop only, added by JS) */
+.btn.has-glass{position:relative;isolation:isolate}
+.btn.has-glass .glass-layer{position:absolute;inset:0;padding:0;display:block;z-index:-2;pointer-events:none;opacity:0;transition:opacity .6s ease}
+.btn.has-glass::before{content:"";position:absolute;inset:0;z-index:-1;background:rgba(8,20,12,.55);opacity:0;transition:opacity .6s ease;pointer-events:none} /* scrim: keeps white text at WCAG AA over the glass */
+.btn.has-glass.glass-ready .glass-layer,.btn.has-glass.glass-ready::before{opacity:1}
+.btn.has-glass.glass-ready:hover .glass-layer,.btn.has-glass.glass-ready:hover::before,.btn.has-glass.glass-off .glass-layer,.btn.has-glass.glass-off::before{opacity:0}

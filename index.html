@@ -34,7 +34,7 @@
   <div class="hero-bg" data-slide="1" style="background-image:url('assets/images/hero-bg.png')"></div>
   <div class="hero-shade"></div>
   <div class="hero-inner">
-    <div class="hero-text">
+    <div class="hero-text" data-glass-ignore>
       <div class="slide active" data-slide="0">
         <h1>Your new beginning&hellip;<br>Written in green.</h1>
         <p class="hero-sub">Own a 2&nbsp;BHK home<br>in a tomorrow full of comfort.</p>
@@ -45,14 +45,14 @@
       </div>
       <div class="hero-btns">
         <a href="#contact" data-enquire class="btn btn-orange">Enquire Now &rarr;</a>
-        <a href="#about" class="btn btn-outline">Explore Project</a>
+        <a href="#about" class="btn btn-outline" data-glass>Explore Project</a>
       </div>
     </div>
 
     
     </div>
   </div>
-  <div class="hero-dots" role="tablist" aria-label="Hero slides">
+  <div class="hero-dots" role="tablist" aria-label="Hero slides" data-glass-ignore>
     <button class="active" role="tab" aria-label="Slide 1"></button>
     <button role="tab" aria-label="Slide 2"></button>
   </div>
@@ -250,7 +250,14 @@
       </form>
     </div>
     <div class="enq-side">
-      <img src="assets/images/logo-large.png" alt="Ketaki Arcade">
+      <div class="logo-liquid" data-liquid-logo>
+        <img src="assets/images/logo-large.png" alt="Ketaki Arcade">
+        <!-- Decorative gold liquid-metal lotus (rendered with Liquid Logo, MIT). The <img> above stays the real logo and fallback. -->
+        <video class="logo-liquid-video" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" disablepictureinpicture>
+          <source data-src="assets/video/lotus-liquid.webm" type="video/webm">
+          <source data-src="assets/video/lotus-liquid.mp4" type="video/mp4">
+        </video>
+      </div>
       <p class="people"><b>Project by</b> Vishal Pawar</p>
       <p class="people"><b>Developer by</b> Kakaram Mule</p>
       <p class="book">Booking Contact<br>  <a href="tel:+917719921460">77 19 92 14 60</a></p>
