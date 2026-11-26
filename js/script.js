@@ -126,7 +126,10 @@
     logo: true,                 // gold liquid-metal lotus in the enquiry section
     glass: true,                // Liquid Glass layer behind the hero "Explore Project" button
     glassTint: 0.12,            // 0 = clear glass, higher = milkier
-    glassMinWidth: 961          // glass only on wider screens with a mouse
+    glassMinWidth: 961,         // glass only on wider screens with a mouse
+    gradient: true,             // Shader Gradient behind the enquiry section
+    gradientPreset: 'calm',     // 'calm' | 'vivid' | 'mono' (see js/shader-gradient.js)
+    gradientMinWidth: 768       // smaller screens keep the static CSS gradient
   };
   const mq=q=>matchMedia(q).matches;
   const calm=mq('(prefers-reduced-motion: reduce)');
@@ -145,6 +148,25 @@
       visible?play():v.pause();
     }),{rootMargin:'200px 0px'}).observe(box);
     document.addEventListener('visibilitychange',()=>document.hidden?v.pause():play());
+  })();
+
+  // Shader Gradient: load React + the gradient only when the enquiry section is near
+  (function(){
+    const mount=$('#sgMount'), wrap=mount&&mount.parentElement;
+    if(!LIQUID.gradient||!mount||calm||saveData) return;
+    if(!mq(`(min-width:${LIQUID.gradientMinWidth}px)`)) return;
+    if(!(HTMLScriptElement.supports&&HTMLScriptElement.supports('importmap'))) return;
+    let gl=null; try{ gl=document.createElement('canvas').getContext('webgl2')||document.createElement('canvas').getContext('webgl'); }catch(e){}
+    if(!gl) return;
+    const lose=gl.getExtension('WEBGL_lose_context'); if(lose) lose.loseContext();
+    const io=new IntersectionObserver(es=>{
+      if(!es.some(e=>e.isIntersecting)) return;
+      io.disconnect();
+      import(new URL('js/shader-gradient.js',document.baseURI).href)
+        .then(m=>m.mount(mount,{preset:LIQUID.gradientPreset,pixelDensity:1,onReady:()=>wrap.classList.add('sg-ready')}))
+        .catch(()=>{});                              // offline / CDN blocked: the CSS gradient stays
+    },{rootMargin:'400px 0px'});
+    io.observe(wrap);
   })();
 
   // Liquid Glass: desktop only, after the page has loaded and the browser is idle

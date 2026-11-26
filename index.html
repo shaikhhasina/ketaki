@@ -10,6 +10,21 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baskervville:ital,wght@0,400..700;1,400..700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<!-- Shader Gradient (enquiry background): pinned ESM builds, fetched only when the enquiry section is near -->
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@19.3.1",
+    "react/": "https://esm.sh/react@19.3.1/",
+    "react-dom": "https://esm.sh/react-dom@19.3.1?external=react",
+    "react-dom/client": "https://esm.sh/react-dom@19.3.1/client?external=react",
+    "three": "https://esm.sh/three@0.187.0",
+    "three/": "https://esm.sh/three@0.187.0/",
+    "@react-three/fiber": "https://esm.sh/@react-three/fiber@9.8.2?external=react,react-dom,three",
+    "@shadergradient/react": "https://esm.sh/@shadergradient/react@2.4.20?external=react,react-dom,three,@react-three/fiber"
+  }
+}
+</script>
 </head>
 <body>
 
@@ -234,6 +249,7 @@
 
 <!-- ENQUIRY -->
 <section class="section enquiry" id="contact">
+  <div class="sg-bg" aria-hidden="true"><div class="sg-mount" id="sgMount"></div></div>
   <div class="container enq-box reveal">
     <div class="enq-form">
       <p class="eyebrow">Reach out to explore more</p>
