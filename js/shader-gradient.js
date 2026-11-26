@@ -34,7 +34,7 @@ export const PRESETS = {
   mono:  { ...base, uSpeed: 0.1, color1: '#14201A', color2: '#2D4034', color3: '#C99A3B' }
 }
 
-export function mount(el, { preset = 'calm', pixelDensity = 1, onReady } = {}) {
+export function mount(el, { preset = 'calm', pixelDensity = 1, onReady, onFail } = {}) {
   const root = createRoot(el)
   root.render(
     h(ShaderGradientCanvas, {
@@ -45,11 +45,24 @@ export function mount(el, { preset = 'calm', pixelDensity = 1, onReady } = {}) {
       rootMargin: '100px'
     }, h(ShaderGradient, PRESETS[preset] || PRESETS.calm))
   )
-  // reveal once the first frame has painted
+  // safety net: if three.js reports a shader error, unmount so the CSS gradient stays and the console stays quiet
+  let failed = false
+  const onError = (e) => {
+    const msg = String((e && (e.message || (e.error && e.error.message))) || '')
+    if (failed || !/THREE\.|WebGL/i.test(msg)) return
+    failed = true
+    e.preventDefault && e.preventDefault()
+    removeEventListener('error', onError)
+    try { root.unmount() } catch (_) {}
+    if (onFail) onFail(msg)
+  }
+  addEventListener('error', onError)
+  // reveal once a few frames have rendered without errors
   const t0 = performance.now()
   ;(function wait () {
-    if (el.querySelector('canvas')) requestAnimationFrame(() => requestAnimationFrame(() => onReady && onReady()))
+    if (failed) return
+    if (el.querySelector('canvas') && performance.now() - t0 > 300) setTimeout(() => { if (!failed && onReady) onReady() }, 400)
     else if (performance.now() - t0 < 15000) requestAnimationFrame(wait)
   })()
-  return () => root.unmount()
+  return () => { removeEventListener('error', onError); root.unmount() }
 }

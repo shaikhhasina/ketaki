@@ -163,7 +163,7 @@
       if(!es.some(e=>e.isIntersecting)) return;
       io.disconnect();
       import(new URL('js/shader-gradient.js',document.baseURI).href)
-        .then(m=>m.mount(mount,{preset:LIQUID.gradientPreset,pixelDensity:1,onReady:()=>wrap.classList.add('sg-ready')}))
+        .then(m=>m.mount(mount,{preset:LIQUID.gradientPreset,pixelDensity:1,onReady:()=>wrap.classList.add('sg-ready'),onFail:()=>wrap.classList.remove('sg-ready')}))
         .catch(()=>{});                              // offline / CDN blocked: the CSS gradient stays
     },{rootMargin:'400px 0px'});
     io.observe(wrap);
