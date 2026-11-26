@@ -121,4 +121,57 @@
     st.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)go(cur+(dx<0?1:-1));x0=null});
     go(0);
   })();
+  // ===== Liquid effects (feat/liquid-effects) — remove this block to remove the feature =====
+  const LIQUID = {
+    logo: true,                 // gold liquid-metal lotus in the enquiry section
+    glass: true,                // Liquid Glass layer behind the hero "Explore Project" button
+    glassTint: 0.12,            // 0 = clear glass, higher = milkier
+    glassMinWidth: 961          // glass only on wider screens with a mouse
+  };
+  const mq=q=>matchMedia(q).matches;
+  const calm=mq('(prefers-reduced-motion: reduce)');
+  const saveData=!!(navigator.connection&&navigator.connection.saveData);
+
+  // Liquid Logo: lazy-load the video when the enquiry section is near, pause offscreen / hidden tab
+  (function(){
+    const box=$('[data-liquid-logo]'); if(!LIQUID.logo||!box||calm||saveData) return;
+    const v=$('video',box); let loaded=false, visible=false;
+    const play=()=>{ if(visible&&!document.hidden){ const p=v.play(); if(p) p.catch(()=>{}); } };
+    v.addEventListener('playing',()=>box.classList.add('is-playing'));
+    v.addEventListener('error',()=>box.classList.remove('is-playing'),true);
+    new IntersectionObserver(es=>es.forEach(e=>{
+      visible=e.isIntersecting;
+      if(visible&&!loaded){ $$('source',v).forEach(s=>s.src=s.dataset.src); v.load(); loaded=true; }
+      visible?play():v.pause();
+    }),{rootMargin:'200px 0px'}).observe(box);
+    document.addEventListener('visibilitychange',()=>document.hidden?v.pause():play());
+  })();
+
+  // Liquid Glass: desktop only, after the page has loaded and the browser is idle
+  (function(){
+    const btn=$('[data-glass]'), hero=$('.hero');
+    if(!LIQUID.glass||!btn||!hero) return;
+    if(!mq(`(min-width:${LIQUID.glassMinWidth}px) and (hover:hover) and (pointer:fine)`)) return;
+    if(calm||saveData||mq('(prefers-reduced-transparency: reduce)')||mq('(prefers-contrast: more)')) return;
+    let gl=null; try{ gl=document.createElement('canvas').getContext('webgl'); }catch(e){}
+    if(!gl) return;
+    const lose=gl.getExtension('WEBGL_lose_context'); if(lose) lose.loseContext();
+    const load=src=>new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s);});
+    const start=()=>load('assets/vendor/html2canvas/html2canvas.min.js')
+      .then(()=>load('assets/vendor/liquid-glass/container.js'))
+      .then(()=>{
+        /* global Container */
+        Container.snapshotTarget=hero;               // vendored patch: snapshot only the hero
+        const g=new Container({type:'rounded',borderRadius:2,tintOpacity:LIQUID.glassTint});
+        g.element.classList.add('glass-layer'); g.element.setAttribute('aria-hidden','true');
+        btn.classList.add('has-glass'); btn.prepend(g.element);
+        const t0=performance.now();
+        (function ready(){ if(g.webglInitialized) btn.classList.add('glass-ready'); else if(performance.now()-t0<8000) requestAnimationFrame(ready); })();
+        const w0=innerWidth;                         // the snapshot is fixed to this width
+        addEventListener('resize',()=>btn.classList.toggle('glass-off',innerWidth!==w0),{passive:true});
+      })
+      .catch(()=>{});                                // any failure: the normal button stays
+    const idle=()=>('requestIdleCallback' in window)?requestIdleCallback(start,{timeout:3000}):setTimeout(start,1500);
+    document.readyState==='complete'?idle():addEventListener('load',idle,{once:true});
+  })();
 })();
