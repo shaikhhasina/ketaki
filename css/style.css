@@ -365,3 +365,10 @@ figcaption{position:absolute;left:0;bottom:0;right:0;background:linear-gradient(
 .btn.has-glass::before{content:"";position:absolute;inset:0;z-index:-1;background:rgba(8,20,12,.55);opacity:0;transition:opacity .6s ease;pointer-events:none} /* scrim: keeps white text at WCAG AA over the glass */
 .btn.has-glass.glass-ready .glass-layer,.btn.has-glass.glass-ready::before{opacity:1}
 .btn.has-glass.glass-ready:hover .glass-layer,.btn.has-glass.glass-ready:hover::before,.btn.has-glass.glass-off .glass-layer,.btn.has-glass.glass-off::before{opacity:0}
+/* Shader Gradient: enquiry-section background. Static CSS gradient first, cross-fades to the shader when ready */
+.enquiry{position:relative;isolation:isolate;overflow:hidden}
+.sg-bg{position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(120% 90% at 15% 20%,rgba(122,20,20,.85),transparent 60%),radial-gradient(90% 80% at 85% 75%,rgba(201,154,59,.55),transparent 65%),var(--dark)}
+.sg-mount{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease}
+.sg-bg.sg-ready .sg-mount{opacity:1}
+.sg-mount canvas{display:block}
+@media print{.sg-bg{display:none}}
